@@ -1,0 +1,28 @@
+textarea
+{
+   resize: none;
+}
+
+.submit
+{
+   color: black;
+}
+
+body 
+{
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+iframe 
+{
+  margin: 0;
+  padding: 0;
+}
+
+table, tr, td 
+{
+  margin: 0;
+  padding: 0;
+  border: none;
+}
