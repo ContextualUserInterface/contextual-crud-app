@@ -1,5 +1,19 @@
+<html>
+<head>   
+    <link rel="stylesheet" href="styles.css">
+</head>    
+<body>
+<style>
+textarea
+{
+   resize: none;
+}
 
-
+.submit
+{
+   color: black;
+}
+</style>
 
 <?php
 
@@ -33,7 +47,7 @@ $shapenames = array
 
 $cellindex = 0;
 
-echo("<table width=\"100%\" height=\"100%\">");
+echo("<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" height=\"100%\">");
 
 for ($y = 0; $y < 3; $y++)
 {
@@ -42,13 +56,13 @@ for ($y = 0; $y < 3; $y++)
     for ($x = 0; $x < 3; $x++)
     {
         echo("<td width=\"33%\">");
-            echo("<table width=\"100%\" height=\"100%\">");
+            echo("<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" height=\"100%\">");
                 
             if ($shapecodes[$cellindex] === 0)
             {
                 echo("<tr height=\"100%\">");
                     echo("<td>");
-                        echo("<iframe src=\"http://ushin.net/u-4-u-demo/index.php\" style=\"width:100%; height:100%;\"></iframe>>");
+                        echo("<iframe frameborder=\"0\" src=\"http://ushin.net/u-4-u-demo/index.php\" style=\"width:100%; height:100%;\"></iframe>");
                     echo("</td>");
                 echo("</tr>");
             }
@@ -81,3 +95,6 @@ for ($y = 0; $y < 3; $y++)
 echo("</table>");
 
 ?>
+
+</body>    
+</html>
