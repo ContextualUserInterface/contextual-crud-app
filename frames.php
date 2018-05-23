@@ -3,17 +3,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>    
 <body>
-<style>
-textarea
-{
-   resize: none;
-}
-
-.submit
-{
-   color: black;
-}
-</style>
 
 <?php
 
