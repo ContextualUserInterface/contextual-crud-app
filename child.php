@@ -1,40 +1,33 @@
+<html>
+<head>   
+    <link rel="stylesheet" href="styles.css">
+</head>    
+<body>
+
 <?php
-//session_start();
-//if (isset($_POST[submit]))
-//{
-//$_SESSION[central]= $_POST[data];
-//$_SESSION[shape]= $_POST[shape];
 
-// Create connection
-$con = new mysqli("localhost","pmaas_ushin_demo_code","redacted", "pmaas_ushin_demo");
+include 'dbconnect.php';
 
-// $config = parse_ini_file('../../private/config.ini'); 
-// $con = new mysqli("localhost",$config['username'],$config['password'],"pmaas_ushin_demo");
-
-
+// Connect to the database
+$con = db_connect();
 
 // Check connection
 if ($con->connect_error) 
 {
     die("Connection failed: " . $con->connect_error);
-} 
+}
 
-//$sql="INSERT INTO Inputs (id, node_id) VALUES('$_POST[id]','$_POST[node_id]')";
 $sql = "INSERT INTO Nodes (content, type_id) VALUES('$_POST[data]', $_POST[shape])";
 
 if ($con->query($sql) === TRUE) 
 {
     $last_node_id = $con->insert_id;
     
-    echo "<p>Inserted Node: " . $last_node_id . " content: " . $_POST[data] . "</p>";
-
     $sql = "INSERT INTO NodeLinks (from_node_id, to_node_id) VALUES($_POST[parent], $last_node_id)";
 
     if ($con->query($sql) === TRUE) 
     {
         $last_link_id = $con->insert_id;
-        
-    echo "<p>Inserted NodeLink: " . $last_link_id . " from: " . $_POST[parent] . " to: " . $last_node_id . "</p>";
     } 
     else 
     {
@@ -57,193 +50,93 @@ while ($inputROW = mysqli_fetch_array($inputResults))
    $shapeLabel = $inputROW[name];    
 }
 
-mysql_close($con)
-//}
+mysql_close($con);
+
+
+$cell_width_ids = array
+(
+    "w_fact",    "w_merit",  "w_person",
+    "w_thought", "w_center", "w_action",
+    "w_feeling", "w_need",   "w_topic"
+);
+
+$cell_height_ids = array
+(
+    "h_fact",    "h_merit",  "h_person",
+    "h_thought", "h_center", "h_action",
+    "h_feeling", "h_need",   "h_topic"
+);
+
+$shapecodes = array
+(
+    3, 2, 1,
+    4, 0, 5,
+    6, 7, 8
+);
+
+$shapenames = array
+(
+    "Facts",    "Merits", "People",
+    "Thoughts", "Center", "Actions",
+    "Feelings", "Needs",  "Topics"
+);
+
+$cellindex = 0;
+
+echo("<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" height=\"100%\">");
+
+for ($y = 0; $y < 3; $y++)
+{
+    echo("<tr height=\"33%\">");
+    
+    for ($x = 0; $x < 3; $x++)
+    {
+        echo("<td width=\"33%\">");
+            echo("<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" height=\"100%\">");
+
+            if ($shapecodes[$cellindex] === 0)
+            {
+               echo("<tr height=\"75%\">");
+                    echo("<td style=\"background-color: silver;text-align:center;\">");
+                        echo("<p>" . $_POST[data] . "</p>");
+                    echo("</td>");
+                echo("</tr>");
+                echo("<tr height=\"25%\">");
+                    echo("<td style=\"background-color: yellow;text-align:center;\">");
+                        echo("<p>" . $shapeLabel . "</p>");
+                    echo("</td>");
+               echo("</tr>");
+            }
+            else
+            {
+                echo("<form action=\"child.php\" method=\"post\">");
+                   echo("<tr height=\"75%\">");
+                        echo("<td>");
+                            echo("<textarea style=\"width: 100%; height: 100%;\" name=\"data\"></textarea>");
+                        echo("</td>");
+                    echo("</tr>");
+                    echo("<tr height=\"25%\">");
+                        echo("<td>");
+                            echo("<input type=\"hidden\" name=\"parent\" value=\"" . $last_node_id . "\" />");
+                            echo("<input type=\"hidden\" name=\"shape\" value=\"" . $shapecodes[$cellindex] . "\" />");
+                            echo("<input style=\"width: 100%; height: 100%;\" type=\"submit\" value=\"" . $shapenames[$cellindex] . "\" />");
+                        echo("</td>");
+                   echo("</tr>");
+                echo("</form>");
+            }
+            
+            echo("</table>");
+        echo("</td>");
+        
+        $cellindex++;
+    }
+    
+    echo("</tr>");
+}
+
+echo("</table>");
+
 ?>
-<html>
-<head></head>    
-<body>
-<style>
-textarea
-{
-   color: black;
-}
-
-.submit
-{
-   color: black;
-}
-</style>
-
-<table width="100%">
-    <tr>
-        <td width="33%">
-            <form action="child.php" method="post">
-                <table width="100%">
-                    <tr height="75">
-                        <td>
-                            <textarea style="width: 100%; height: 100%;" name="data"></textarea>
-                            <input type="hidden" name="shape" value="3">
-                            <input type="hidden" name="parent" value="<?php echo $last_node_id;?>">
-                        </td>
-                    </tr>
-                    <tr height="25">
-                        <td>
-                            <input style="width: 100%; height: 100%;" type="submit" value="Facts" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-        <td width="33%">
-            <form action="child.php" method="post">
-                <table width="100%">
-                    <tr height="75">
-                        <td>
-                            <textarea style="width: 100%; height: 100%;" name="data"></textarea>
-                            <input type="hidden" name="shape" value="2">
-                            <input type="hidden" name="parent" value="<?php echo $last_node_id;?>">
-                        </td>
-                    </tr>
-                    <tr height="25">
-                        <td>
-                            <input style="width: 100%; height: 100%;" type="submit" value="Merits" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-        <td width="33%">
-            <form action="child.php" method="post">
-                <table width="100%">
-                    <tr height="75">
-                        <td>
-                            <textarea style="width: 100%; height: 100%;" name="data"></textarea>
-                            <input type="hidden" name="parent" value="<?php echo $last_node_id;?>">
-                            <input type="hidden" name="shape" value="1">
-                        </td>
-                    </tr>
-                    <tr height="25">
-                        <td>
-                            <input style="width: 100%; height: 100%;" type="submit" value="People" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-    </tr>
-    <tr>
-        <td width="33%">
-            <form action="child.php" method="post">
-                <table width="100%">
-                    <tr height="75">
-                        <td>
-                            <textarea style="width: 100%; height: 100%;" name="data"></textarea>
-                            <input type="hidden" name="parent" value="<?php echo $last_node_id;?>">
-                            <input type="hidden" name="shape" value="4">
-                        </td>
-                    </tr>
-                    <tr height="25">
-                        <td>
-                            <input style="width: 100%; height: 100%;" type="submit" value="Thoughts" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-        <td width="33%">
-                 <table width="100%">
-                    <tr height="75">
-                        <td style="background-color: silver;text-align:center;">
-            <p><?php echo $_POST[data];?></p>
-                        </td>
-                    </tr>
-                    <tr height="25">
-                        <td style="background-color: yellow;text-align:center;">
-            <p><?php echo $shapeLabel;?></p>
-                        </td>
-                    </tr>
-                </table>
-       </td>
-        <td width="33%">
-            <form action="child.php" method="post">
-                <table width="100%">
-                    <tr height="75">
-                        <td>
-                            <textarea style="width: 100%; height: 100%;" name="data"></textarea>
-                            <input type="hidden" name="parent" value="<?php echo $last_node_id;?>">
-                            <input type="hidden" name="shape" value="5">
-                        </td>
-                    </tr>
-                    <tr height="25">
-                        <td>
-                            <input style="width: 100%; height: 100%;" type="submit" value="Actions" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-    </tr>
-    <tr>
-        <td width="33%">
-            <form action="child.php" method="post">
-                <table width="100%">
-                    <tr height="75">
-                        <td>
-                            <textarea style="width: 100%; height: 100%;" name="data"></textarea>
-                            <input type="hidden" name="parent" value="<?php echo $last_node_id;?>">
-                            <input type="hidden" name="shape" value="6">
-                        </td>
-                    </tr>
-                    <tr height="25">
-                        <td>
-                            <input style="width: 100%; height: 100%;" type="submit" value="Feelings" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-        <td width="33%">
-            <form action="child.php" method="post">
-                <table width="100%">
-                    <tr height="75">
-                        <td>
-                            <textarea style="width: 100%; height: 100%;" name="data"></textarea>
-                             <input type="hidden" name="parent" value="<?php echo $last_node_id;?>">
-                           <input type="hidden" name="shape" value="7">
-                        </td>
-                    </tr>
-                    <tr height="25">
-                        <td>
-                            <input style="width: 100%; height: 100%;" type="submit" value="Needs" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-        <td width="33%">
-            <form action="child.php" method="post">
-                <table width="100%">
-                    <tr height="75">
-                        <td>
-                            <textarea style="width: 100%; height: 100%;" name="data"></textarea>
-                             <input type="hidden" name="parent" value="<?php echo $last_node_id;?>">
-                           <input type="hidden" name="shape" value="8">
-                        </td>
-                    </tr>
-                    <tr height="25">
-                        <td>
-                            <input style="width: 100%; height: 100%;" type="submit" value="Topics" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-    </tr>
-</table>
 
 </body>    
 </html>
-
-
-
