@@ -26,3 +26,52 @@ table, tr, td
   padding: 0;
   border: none;
 }
+
+.merit
+{
+    background: url("./images/faded/merits.png");
+}
+
+.person
+{
+    background: url("./images/faded/people.png");
+}
+
+.fact
+{
+    background: url("./images/faded/facts.png");
+}
+
+.thought
+{
+    background: url("./images/faded/thoughts.png");
+}
+
+.action
+{
+    background: url("./images/faded/actions.png");
+}
+
+.feeling
+{
+    background: url("./images/faded/feelings.png");
+}
+
+.need
+{
+    background: url("./images/faded/needs.png");
+}
+
+.topic
+{
+    background: url("./images/faded/topics.png");
+}
+
+
+.merit, .person, .fact, .thought, .action, .feeling, .need, .topic
+{
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    text-align:center;
+}
